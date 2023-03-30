@@ -32,6 +32,11 @@ authentication:
       required: true
       schema:
         type: string
+    - name: account
+      multiline: false
+      required: true
+      schema:
+        type: string
     - name: server
       description: The Exchange (OWA) server path
       multiline: false

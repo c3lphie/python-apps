@@ -12,6 +12,7 @@ from exchangelib import (
     DELEGATE,
     Account,
     OAuth2Credentials,
+    OAUTH2,
     Configuration,
     Version,
     Build,
@@ -73,7 +74,14 @@ class Owa(AppBase):
         super().__init__(redis, logger, console_logger)
 
     def authenticate(
-        self, client_id, client_secret, tenant_id, server, build, verifyssl
+        self,
+        client_id,
+        client_secret,
+        tenant_id,
+        account,
+        server,
+        build,
+        verifyssl,
     ):
         """
         Authenticates to Exchange server
@@ -110,13 +118,16 @@ class Owa(AppBase):
             if processed_build:
                 version = Version(build=Build(*processed_build))
                 config = Configuration(
-                    server=server, credentials=credentials, version=version
+                    server=server,
+                    credentials=credentials,
+                    version=version,
+                    auth_type=OAUTH2,
                 )
             else:
                 config = Configuration(server=server, credentials=credentials)
 
             account = Account(
-                config=config, autodiscover=False, access_type=DELEGATE
+                account, config=config, autodiscover=False, access_type=DELEGATE
             )
             account.root.refresh()
 
@@ -175,6 +186,7 @@ class Owa(AppBase):
         client_id,
         client_secret,
         tenant_id,
+        account,
         server,
         build,
         verifyssl,
@@ -190,6 +202,7 @@ class Owa(AppBase):
             client_id,
             client_secret,
             tenant_id,
+            account,
             server,
             build,
             verifyssl,
@@ -247,6 +260,7 @@ class Owa(AppBase):
         client_id,
         client_secret,
         tenant_id,
+        account,
         server,
         build,
         verifyssl,
@@ -260,7 +274,13 @@ class Owa(AppBase):
         # Authenticate
         print(f"Marking {email_id} as read")
         auth = self.authenticate(
-            client_id, client_secret, tenant_id. server, build, verifyssl
+            client_id,
+            client_secret,
+            tenant_id,
+            account,
+            server,
+            build,
+            verifyssl,
         )
 
         if auth["error"]:
